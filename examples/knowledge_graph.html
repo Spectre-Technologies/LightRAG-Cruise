@@ -1,0 +1,155 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 100vh;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#ad9a7a", "description": "\"Alex is a character who experiences frustration and is observant of the dynamics among other characters.\"\u003cSEP\u003e\"Alex is the leader of a team attempting first contact with an unknown intelligence, acknowledging the significance of their task.\"", "entity_type": "\"PERSON\"", "id": "\"ALEX\"", "label": "\"ALEX\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#82f8bc", "description": "\"Taylor is portrayed with authoritarian certainty and shows a moment of reverence towards a device, indicating a change in perspective.\"", "entity_type": "\"PERSON\"", "id": "\"TAYLOR\"", "label": "\"TAYLOR\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#d02bb6", "description": "\"Jordan shares a commitment to discovery and has a significant interaction with Taylor regarding a device.\"", "entity_type": "\"PERSON\"", "id": "\"JORDAN\"", "label": "\"JORDAN\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#4a105e", "description": "\"First Contact is the potential initial communication between humanity and an unknown intelligence.\"", "entity_type": "\"EVENT\"", "id": "\"FIRST CONTACT\"", "label": "\"FIRST CONTACT\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#af9e87", "description": "\"Alex and his team are the key figures in Humanity\u0027s Response to the unknown intelligence.\"", "entity_type": "\"UNKNOWN\"", "id": "\"HUMANITY\u0027S RESPONSE\"", "label": "\"HUMANITY\u0027S RESPONSE\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#3e526e", "description": "\"Cruz\u0027s vision of control and order is a driving force behind the dynamics among other characters.\"", "entity_type": "\"CONCEPT\"", "id": "\"CRUZ\u0027S VISION\"", "label": "\"CRUZ\u0027S VISION\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#defa4e", "description": "\"The unknown intelligence refers to an entity capable of writing its own rules and communicating with humans.\"", "entity_type": "\"CONCEPT\"", "id": "\"UNKNOWN INTELLIGENCE\"", "label": "\"UNKNOWN INTELLIGENCE\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#9b450b", "description": "\"The Device is central to the story, with potential game-changing implications, and is revered by Taylor.\"", "entity_type": "\"TECHNOLOGY\"", "id": "\"THE DEVICE\"", "label": "\"THE DEVICE\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#d3266e", "description": "\"Authority refers to the power or right to control or command others, which is challenged by Taylor\u0027s actions.\"", "entity_type": "\"CONCEPT\"", "id": "\"AUTHORITY\"", "label": "\"AUTHORITY\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#efd303", "description": "\"Cruz is associated with a vision of control and order, influencing the dynamics among other characters.\"", "entity_type": "\"PERSON\"", "id": "\"CRUZ\"", "label": "\"CRUZ\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#71dbe2", "description": "\"Washington is a location where communications are being received, indicating its importance in the decision-making process.\"", "entity_type": "\"LOCATION\"", "id": "\"WASHINGTON\"", "label": "\"WASHINGTON\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#e9b9d3", "description": "\"The team is portrayed as a group of individuals who have transitioned from passive observers to active participants in a mission, showing a dynamic change in their role.\"", "entity_type": "\"ORGANIZATION\"", "id": "\"THE TEAM\"", "label": "\"THE TEAM\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#2a3986", "description": "\"Operation: Dulce is described as a mission that has evolved to interact and prepare, indicating a significant shift in objectives and activities.\"", "entity_type": "\"MISSION\"", "id": "\"OPERATION: DULCE\"", "label": "\"OPERATION: DULCE\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#b92f6b", "description": "\"Established protocols refer to routine procedures or guidelines that are followed, but may not be effective for Operation: Dulce.\"", "entity_type": "\"CONCEPT\"", "id": "\"ESTABLISHED PROTOCOLS\"", "label": "\"ESTABLISHED PROTOCOLS\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#5b5b3e", "description": "\"Sam Rivera is a member of a team working on communicating with an unknown intelligence, showing a mix of awe and anxiety.\"", "entity_type": "\"PERSON\"", "id": "\"SAM RIVERA\"", "label": "\"SAM RIVERA\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#ec0ea9", "description": "\"Intelligence here refers to an unknown entity capable of writing its own rules and learning to communicate.\"", "entity_type": "\"CONCEPT\"", "id": "\"INTELLIGENCE\"", "label": "\"INTELLIGENCE\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#3c3ff3", "description": "\"Control refers to the ability to manage or govern, which is challenged by an intelligence that writes its own rules.\"", "entity_type": "\"CONCEPT\"", "id": "\"CONTROL\"", "label": "\"CONTROL\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#ecadc1", "description": "\"The discovery team, consisting of Alex, Jordan, and others, share a commitment to discovering new things.\"", "entity_type": "\"ORGANIZATION\"", "id": "\"DISCOVERY TEAM\"", "label": "\"DISCOVERY TEAM\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#3f7207", "description": "\"The discovery team is committed to discovering new things, which drives their actions and decisions.\"", "entity_type": "\"UNKNOWN\"", "id": "\"DISCOVERY\"", "label": "\"DISCOVERY\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#bee7b8", "description": "\"Regulations refer to established rules or laws that govern behavior, which are challenged by Operation: Dulce\u0027s evolved objectives.\"", "entity_type": "\"CONCEPT\"", "id": "\"REGULATIONS\"", "label": "\"REGULATIONS\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#7fc7b3", "description": "\"The team members, consisting of the team and others, work together to achieve their goals.\"", "entity_type": "\"ORGANIZATION\"", "id": "\"TEAM MEMBERS\"", "label": "\"TEAM MEMBERS\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#5a09d5", "description": "\"The collective action taken by Alex\u0027s team in response to the unknown intelligence is a crucial part of their engagement.\"", "entity_type": "\"ORGANIZATION\"", "id": "\"COLLECTIVE ACTION\"", "label": "\"COLLECTIVE ACTION\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#389351", "description": "\"The communication process between the team and the unknown intelligence is a key aspect of their interactions.\"", "entity_type": "\"EVENT\"", "id": "\"COMMUNICATION PROCESS\"", "label": "\"COMMUNICATION PROCESS\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#e1552f", "description": "\"The Threshold is a guardian of a message, indicating its importance in the narrative.\"", "entity_type": "\"GEO\"", "id": "\"THE THRESHOLD\"", "label": "\"THE THRESHOLD\"", "shape": "dot", "size": 10, "source_id": "chunk-fbb44b4487415b134bce9c790a27fe5e"}, {"color": "#4a96d3", "description": "\"The Operatives interact with The Threshold, showcasing their role as guardians.\"", "entity_type": "\"UNKNOWN\"", "id": "\"THE OPERATIVES\"", "label": "\"THE OPERATIVES\"", "shape": "dot", "size": 10, "source_id": "chunk-fbb44b4487415b134bce9c790a27fe5e"}, {"color": "#1eb743", "description": "\"Taylor\u0027s authoritarian certainty is a characteristic that affects Alex\u0027s actions and decisions.\"", "entity_type": "\"CONCEPT\"", "id": "\"TAYLOR\u0027S CERTAINTY\"", "label": "\"TAYLOR\u0027S CERTAINTY\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#b062ed", "description": "\"The decision-making process among the characters is influenced by various factors, including Taylor\u0027s certainty and Cruz\u0027s vision.\"", "entity_type": "\"EVENT\"", "id": "\"DECISION-MAKING PROCESS\"", "label": "\"DECISION-MAKING PROCESS\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#35a131", "description": "\"Operation: Dulce undergoes an evolution in its objectives and activities, leading to a shift in the team\u0027s dynamics.\"", "entity_type": "\"EVENT\"", "id": "\"EVOLUTION\"", "label": "\"EVOLUTION\"", "shape": "dot", "size": 10, "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b"}, {"color": "#184e56", "description": "\"An organization that offers travel experiences.\"\u003cSEP\u003e\"Cruises is an organization that offers travel experiences.\"", "entity_type": "\"ORGANIZATION\"", "id": "\"CRUISES\"", "label": "\"CRUISES\"", "shape": "dot", "size": 10, "source_id": "chunk-41ce43a3f8ef399a053aeb93db62d486"}, {"color": "#0b3d04", "description": "\"Travel experiences refer to the adventures and explorations offered by cruises.\"", "entity_type": "\"CONCEPT\"", "id": "\"TRAVEL EXPERIENCES\"", "label": "\"TRAVEL EXPERIENCES\"", "shape": "dot", "size": 10, "source_id": "chunk-41ce43a3f8ef399a053aeb93db62d486"}, {"color": "#c8b850", "description": "\"Adventures are events or activities that take place during a cruise, such as snorkeling or hiking.\"", "entity_type": "\"EVENT\"", "id": "\"ADVENTURES\"", "label": "\"ADVENTURES\"", "shape": "dot", "size": 10, "source_id": "chunk-41ce43a3f8ef399a053aeb93db62d486"}, {"color": "#e02d5c", "description": "\"Explorations refer to the act of discovering and learning about new places, cultures, and experiences while on a cruise.\"", "entity_type": "\"CONCEPT\"", "id": "\"EXPLORATIONS\"", "label": "\"EXPLORATIONS\"", "shape": "dot", "size": 10, "source_id": "chunk-41ce43a3f8ef399a053aeb93db62d486"}, {"color": "#88fa66", "description": "\"Snorkeling is a type of water sports technology that allows people to explore underwater environments.\"", "entity_type": "\"TECHNOLOGY\"", "id": "\"SNORKELING\"", "label": "\"SNORKELING\"", "shape": "dot", "size": 10, "source_id": "chunk-41ce43a3f8ef399a053aeb93db62d486"}, {"color": "#2d095e", "description": "\"Hiking is a type of land-based adventure technology that involves exploring and traversing natural terrain.\"", "entity_type": "\"TECHNOLOGY\"", "id": "\"HIKING\"", "label": "\"HIKING\"", "shape": "dot", "size": 10, "source_id": "chunk-41ce43a3f8ef399a053aeb93db62d486"}, {"color": "#377252", "description": "\"Places refer to the physical locations visited during a cruise, such as islands or beaches.\"", "entity_type": "\"GEO\"", "id": "\"PLACES\"", "label": "\"PLACES\"", "shape": "dot", "size": 10, "source_id": "chunk-41ce43a3f8ef399a053aeb93db62d486"}, {"color": "#5917de", "description": "\"Cultures refer to the social norms, customs, and traditions of the people living in the places visited during a cruise.\"", "entity_type": "\"CONCEPT\"", "id": "\"CULTURES\"", "label": "\"CULTURES\"", "shape": "dot", "size": 10, "source_id": "chunk-41ce43a3f8ef399a053aeb93db62d486"}, {"color": "#4c8b4a", "description": "\"Experiences refer to the events or activities that take place during a cruise, such as dining or entertainment.\"", "entity_type": "\"EVENT\"", "id": "\"EXPERIENCES\"", "label": "\"EXPERIENCES\"", "shape": "dot", "size": 10, "source_id": "chunk-41ce43a3f8ef399a053aeb93db62d486"}, {"color": "#561efc", "description": "\"Dining refers to the act of eating and enjoying food while on a cruise.\"", "entity_type": "\"CONCEPT\"", "id": "\"DINING\"", "label": "\"DINING\"", "shape": "dot", "size": 10, "source_id": "chunk-41ce43a3f8ef399a053aeb93db62d486"}, {"color": "#2bdccb", "description": "\"Entertainment refers to the activities or performances that take place during a cruise, such as shows or games.\"", "entity_type": "\"EVENT\"", "id": "\"ENTERTAINMENT\"", "label": "\"ENTERTAINMENT\"", "shape": "dot", "size": 10, "source_id": "chunk-41ce43a3f8ef399a053aeb93db62d486"}]);
+                  edges = new vis.DataSet([{"description": "\"Alex is affected by Taylor\u0027s authoritarian certainty and observes changes in Taylor\u0027s attitude towards the device.\"", "from": "\"ALEX\"", "keywords": "\"power dynamics, perspective shift\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"TAYLOR\"", "width": 7.0}, {"description": "\"Alex and Jordan share a commitment to discovery, which contrasts with Cruz\u0027s vision.\"", "from": "\"ALEX\"", "keywords": "\"shared goals, rebellion\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"JORDAN\"", "width": 6.0}, {"description": "\"Alex leads the team that might be making the First Contact with the unknown intelligence.\"", "from": "\"ALEX\"", "keywords": "\"leadership, exploration\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"FIRST CONTACT\"", "width": 10.0}, {"description": "\"Alex and his team are the key figures in Humanity\u0027s Response to the unknown intelligence.\"", "from": "\"ALEX\"", "keywords": "\"collective action, cosmic significance\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"HUMANITY\u0027S RESPONSE\"", "width": 8.0}, {"description": "\"Alex is affected by Cruz\u0027s vision of control and order, leading to a clash with his own values and goals.\"", "from": "\"ALEX\"", "keywords": "\"ideological conflict, rebellion\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"CRUZ\u0027S VISION\"", "width": 6.0}, {"description": "\"Alex leads the team in interacting with the unknown intelligence, which involves communication and decision-making.\"", "from": "\"ALEX\"", "keywords": "\"leadership, exploration\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"UNKNOWN INTELLIGENCE\"", "width": 10.0}, {"description": "\"Taylor and Jordan interact directly regarding the device, leading to a moment of mutual respect and an uneasy truce.\"", "from": "\"TAYLOR\"", "keywords": "\"conflict resolution, mutual respect\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"JORDAN\"", "width": 8.0}, {"description": "\"Taylor shows reverence towards the device, indicating its importance and potential impact.\"", "from": "\"TAYLOR\"", "keywords": "\"reverence, technological significance\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"THE DEVICE\"", "width": 9.0}, {"description": "\"Taylor exercises authority over the team, influencing their decisions and actions.\"", "from": "\"TAYLOR\"", "keywords": "\"power dynamics, control\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"AUTHORITY\"", "width": 8.0}, {"description": "\"Jordan\u0027s commitment to discovery is in rebellion against Cruz\u0027s vision of control and order.\"", "from": "\"JORDAN\"", "keywords": "\"ideological conflict, rebellion\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"CRUZ\"", "width": 5.0}, {"description": "\"The team receives communications from Washington, which influences their decision-making process.\"", "from": "\"WASHINGTON\"", "keywords": "\"decision-making, external influence\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"THE TEAM\"", "width": 7.0}, {"description": "\"The team is directly involved in Operation: Dulce, executing its evolved objectives and activities.\"", "from": "\"OPERATION: DULCE\"", "keywords": "\"mission evolution, active participation\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"THE TEAM\"", "width": 9.0}, {"description": "\"Operation: Dulce\u0027s evolved objectives and activities challenge established protocols, leading to a need for new procedures.\"", "from": "\"OPERATION: DULCE\"", "keywords": "\"innovation, problem-solving\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"ESTABLISHED PROTOCOLS\"", "width": 9.0}, {"description": "\"Sam Rivera is directly involved in the process of learning to communicate with the unknown intelligence.\"", "from": "\"SAM RIVERA\"", "keywords": "\"communication, learning process\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"INTELLIGENCE\"", "width": 9.0}, {"description": "\"The concept of Control is challenged by the Intelligence that writes its own rules.\"", "from": "\"CONTROL\"", "keywords": "\"power dynamics, autonomy\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"INTELLIGENCE\"", "width": 7.0}, {"description": "\"The concept of authority is challenged by Cruz\u0027s vision of control and order, leading to a conflict with the discovery team.\"", "from": "\"CRUZ\u0027S VISION\"", "keywords": "\"ideological conflict, power dynamics\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"AUTHORITY\"", "width": 7.0}, {"description": "\"The discovery team is committed to discovering new things, which drives their actions and decisions.\"", "from": "\"DISCOVERY TEAM\"", "keywords": "\"shared goals, exploration\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"DISCOVERY\"", "width": 9.0}, {"description": "\"The concept of regulations is challenged by the team members\u0027 actions and decisions in Operation: Dulce.\"\u003cSEP\u003e\"The team members work within established regulations, but may need to adapt or change them for Operation: Dulce.\"", "from": "\"REGULATIONS\"", "keywords": "\"adaptation, flexibility\"\u003cSEP\u003e\"power dynamics, control\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"TEAM MEMBERS\"", "width": 14.0}, {"description": "\"The team members work together to take collective action in response to the unknown intelligence.\"", "from": "\"TEAM MEMBERS\"", "keywords": "\"teamwork, collaboration\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"COLLECTIVE ACTION\"", "width": 9.0}, {"description": "\"The communication process between the team and the unknown intelligence is a key factor in their interactions and decision-making.\"", "from": "\"UNKNOWN INTELLIGENCE\"", "keywords": "\"communication, understanding\"", "source_id": "chunk-2cdbd5d59aaeb6735fa69979ec8f481b", "to": "\"COMMUNICATION PROCESS\"", "width": 8.0}, {"description": "\"The Operatives interact with The Threshold, showcasing their role as guardians.\"", "from": "\"THE THRESHOLD\"", "keywords": "\"interaction, guardianship\"", "source_id": "chunk-fbb44b4487415b134bce9c790a27fe5e", "to": "\"THE OPERATIVES\"", "width": 8.0}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

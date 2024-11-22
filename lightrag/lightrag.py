@@ -288,7 +288,17 @@ class LightRAG:
         finally:
             if update_storage:
                 await self._insert_done()
+                
+    def insert(self, string_or_strings):
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
 
+        if loop and loop.is_running():
+            return self.ainsert(string_or_strings)
+        else:
+            return asyncio.run(self.ainsert(string_or_strings))
     async def _insert_done(self):
         tasks = []
         for storage_inst in [
@@ -305,11 +315,10 @@ class LightRAG:
             tasks.append(cast(StorageNameSpace, storage_inst).index_done_callback())
         await asyncio.gather(*tasks)
 
-    def query(self, query: str, param: QueryParam = QueryParam()):
-        loop = always_get_an_event_loop()
-        return loop.run_until_complete(self.aquery(query, param))
-
-    async def aquery(self, query: str, param: QueryParam = QueryParam()):
+    async def query(self, query: str, param: QueryParam = QueryParam()):
+        """
+        Perform a query asynchronously.
+        """
         if param.mode == "local":
             response = await local_query(
                 query,
@@ -391,3 +400,13 @@ class LightRAG:
                 continue
             tasks.append(cast(StorageNameSpace, storage_inst).index_done_callback())
         await asyncio.gather(*tasks)
+
+    async def insert_async(self, string_or_strings):
+        await self.ainsert(string_or_strings)
+
+    async def delete_by_entity_async(self, entity_name: str):
+        await self.adelete_by_entity(entity_name)
+
+    async def aquery(self, query: str, param: QueryParam = QueryParam()):
+        # Optionally implement if needed
+        pass

@@ -6,9 +6,15 @@ lightrag-dev/
 .idea/
 dist/
 env/
+myenv/
+cruise_search_cache/
+dickens/
+cruise_rag_cache/
 local_neo4jWorkDir/
 neo4jWorkDir/
 ignore_this.txt
 .venv/
 *.ignore.*
 .ruff_cache/
+*.json
+*.txt
